@@ -1,0 +1,3 @@
+# O código do servidor (e a senha do banco em config.php) não pode ser
+# baixado pelo navegador: só os endpoints da pasta /api incluem estes arquivos.
+Require all denied

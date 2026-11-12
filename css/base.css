@@ -1,0 +1,297 @@
+/* =====================================================================
+   base.css — Sistema visual "mesa de colecionador numa noite de corrida"
+   ---------------------------------------------------------------------
+   Três regras de matéria (ver docs/superpowers/specs):
+   1. OBJETO FÍSICO (carros, cubos, manopla, cenário): imagem renderizada
+      no Blender; uma única luz vinda do alto à esquerda, sombra para
+      baixo à direita.
+   2. SUPERFÍCIE IMPRESSA (cartas, tampa, tabuleiro do piloto, folhas):
+      estilo cartaz de corrida dos anos 70, com cores chapadas e sem brilho.
+   3. AMBIENTE: mesa escura com a luz âmbar da luminária. O âmbar também
+      marca seleção e foco.
+   Texturas feitas com SVG embutido (feTurbulence): funcionam offline.
+   ===================================================================== */
+
+:root {
+  /* Mesa (ambiente) */
+  --mesa: #1A1511;
+  --mesa-2: #241C16;
+  --mesa-3: #2F251D;
+  --mesa-texto: #F3E9D6;
+  --mesa-texto-suave: #CDBB98;
+
+  /* Luz da luminária: também é a cor de seleção e foco */
+  --luz: #F2B35B;
+  --luz-clara: #FFD592;
+
+  /* Papel impresso */
+  --papel: #F1E4C8;
+  --papel-claro: #F7EEDB;
+  --papel-2: #E9DABA;
+  --papel-3: #DCC9A3;
+  --papel-borda: #C5AE82;
+
+  /* Tinta de impressão (azul-marinho) */
+  --tinta: #1D2B3A;
+  --tinta-2: #3D4A57;
+  --tinta-3: #55626E;
+
+  /* Tintas de equipe e de regra */
+  --vermelho: #C63A2B;
+  --vermelho-escuro: #8C2419;
+  --azul: #1F6FA0;
+  --verde: #2A9D5C;          /* Bot Beta (verde-bandeira) */
+  --verde-escuro: #237A4B;   /* carta 2 */
+  --verde-texto: #1C6B40;    /* texto verde sobre o papel */
+  --ocre: #E2A33B;
+  --brasa: #E0702F;
+  --brasa-texto: #A8461A;
+  --gelo: #2F7FA8;
+  --gelo-texto: #23668A;
+
+  /* Maquete */
+  --grama: #56772F;
+  --asfalto: #2E2F31;
+
+  /* Nomes antigos mantidos (usados em vários componentes) */
+  --mostarda: var(--luz);
+  --mostarda-escura: #9A6A17;
+
+  /* Sombras de objetos sobre a mesa: luz do alto à esquerda, então a
+     sombra cai para baixo e para a direita, em tom quente (nunca preto puro) */
+  --sombra-1: 1px 2px 3px rgba(18, 10, 4, .38), 0 1px 1px rgba(18, 10, 4, .3);
+  --sombra-2: 3px 7px 16px rgba(14, 8, 3, .46), 1px 2px 4px rgba(14, 8, 3, .34);
+  --sombra-3: 8px 18px 38px rgba(10, 6, 2, .56), 2px 5px 10px rgba(10, 6, 2, .38);
+  --sombra-papel: 0 1px 0 rgba(255, 250, 238, .7) inset, var(--sombra-2);
+  --sombra-leve: var(--sombra-1);
+
+  /* Espaçamentos */
+  --espaco-1: 4px;
+  --espaco-2: 8px;
+  --espaco-3: 12px;
+  --espaco-4: 16px;
+  --espaco-5: 24px;
+  --espaco-6: 32px;
+  --espaco-7: 48px;
+  --raio: 8px;
+  --raio-pequeno: 5px;
+  --alvo-toque: 44px;
+
+  /* Inclinação dos títulos de cartaz e dos números das cartas */
+  --inclinacao: -9deg;
+
+  /* Tipografia do sistema (sem CDN):
+     títulos e números condensados (Bahnschrift vem no Windows),
+     textos de "livro de regras" em serifa, anotações em letra de mão. */
+  --fonte-titulo: "Bahnschrift Condensed", "Bahnschrift", "DIN Condensed", "Avenir Next Condensed", "Arial Narrow", sans-serif;
+  --fonte-numeros: "Bahnschrift", "DIN Alternate", "Avenir Next", "Segoe UI", sans-serif;
+  --fonte-texto: "Segoe UI", system-ui, -apple-system, Roboto, "Helvetica Neue", Arial, sans-serif;
+  --fonte-serifa: Georgia, "Iowan Old Style", "Palatino Linotype", "Book Antiqua", serif;
+  --fonte-mao: "Segoe Print", "Bradley Hand", "Noteworthy", "Comic Neue", Georgia, serif;
+
+  /* Texturas */
+  --textura-papel: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .35 0 0 0 0 .27 0 0 0 0 .17 0 0 0 .08 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  --textura-madeira: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='600'%3E%3Cfilter id='m'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.004 .09' numOctaves='4' seed='7' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .5 0 0 0 0 .34 0 0 0 0 .2 0 0 0 .2 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23m)'/%3E%3C/svg%3E");
+  /* Meio-tom de cartaz (pontinhos de tinta) */
+  --meio-tom: radial-gradient(circle, rgba(29, 43, 58, .16) 1.1px, transparent 1.4px);
+
+  /* Anel de foco: âmbar sobre a mesa; tinta sobre o papel (.papel redefine) */
+  --cor-foco: var(--luz);
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; background: var(--mesa); }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  /* A luminária ilumina o alto à esquerda; o resto da mesa cai na penumbra */
+  background:
+    radial-gradient(ellipse 75% 65% at 22% 8%, rgba(242, 179, 91, .17), rgba(242, 179, 91, 0) 62%),
+    radial-gradient(ellipse 130% 110% at 40% 30%, rgba(0, 0, 0, 0) 42%, rgba(0, 0, 0, .58) 100%),
+    var(--textura-madeira),
+    linear-gradient(180deg, #221A13, var(--mesa));
+  background-attachment: fixed;
+  color: var(--mesa-texto);
+  font-family: var(--fonte-texto);
+  font-size: 16px;
+  line-height: 1.5;
+  overflow-x: hidden;
+}
+
+h1, h2, h3, h4 {
+  margin: 0;
+  font-family: var(--fonte-titulo);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: .02em;
+}
+
+p { margin: 0; }
+
+button, input, select { font: inherit; color: inherit; }
+
+img { max-width: 100%; }
+
+[hidden] { display: none !important; }
+
+/* Tudo que é "papel" ganha a mesma matéria: impresso, chapado, sobre a mesa */
+.papel {
+  --cor-foco: var(--tinta);
+  background-color: var(--papel);
+  background-image: var(--textura-papel);
+  color: var(--tinta);
+  border-radius: var(--raio-pequeno);
+  box-shadow: var(--sombra-papel);
+}
+.papel strong { color: var(--tinta); }
+
+kbd {
+  display: inline-block;
+  min-width: 1.8em;
+  padding: 0 6px;
+  border: 1px solid var(--papel-borda);
+  border-bottom-width: 3px;
+  border-radius: 4px;
+  background: var(--papel-claro);
+  color: var(--tinta);
+  font-family: var(--fonte-numeros);
+  font-size: .85em;
+  text-align: center;
+}
+
+/* Foco sempre visível (acessibilidade): a cor muda com a superfície */
+:focus-visible {
+  outline: 3px solid var(--cor-foco);
+  outline-offset: 3px;
+}
+
+.sr-only {
+  position: absolute !important;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0 0 0 0);
+  white-space: nowrap; border: 0;
+}
+
+.pular-link {
+  position: absolute;
+  left: var(--espaco-4);
+  top: -60px;
+  z-index: 100;
+  padding: var(--espaco-2) var(--espaco-4);
+  background: var(--luz);
+  color: var(--tinta);
+  font-weight: 700;
+  border-radius: var(--raio-pequeno);
+}
+.pular-link:focus { top: var(--espaco-2); }
+
+.icone {
+  width: 1.1em;
+  height: 1.1em;
+  flex: none;
+  vertical-align: -.2em;
+}
+
+/* ---------- Botões: peças físicas com "espessura" ---------- */
+.botao {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--espaco-2);
+  min-height: var(--alvo-toque);
+  padding: 8px 20px;
+  border: 0;
+  border-radius: 6px;
+  font-family: var(--fonte-titulo);
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: transform .1s ease, box-shadow .1s ease, background-color .2s;
+}
+.botao:disabled { opacity: .5; cursor: not-allowed; }
+
+.botao-principal {
+  background: var(--vermelho);
+  color: var(--papel-claro);
+  box-shadow: inset 0 1px 0 rgba(255, 220, 200, .35), 0 4px 0 var(--vermelho-escuro), var(--sombra-2);
+}
+.botao-principal:hover:not(:disabled) { background: #D3463A; }
+.botao-principal:active:not(:disabled) { transform: translateY(3px); box-shadow: inset 0 1px 0 rgba(255, 220, 200, .35), 0 1px 0 var(--vermelho-escuro), var(--sombra-1); }
+
+.botao-secundario {
+  background: transparent;
+  color: var(--tinta);
+  box-shadow: inset 0 0 0 2px var(--tinta);
+}
+.botao-secundario:hover:not(:disabled) { background: rgba(29, 43, 58, .08); }
+
+.botao-secundario-escuro {
+  background: transparent;
+  color: var(--mesa-texto);
+  box-shadow: inset 0 0 0 2px rgba(243, 233, 214, .5);
+}
+.botao-secundario-escuro:hover:not(:disabled) { box-shadow: inset 0 0 0 2px var(--mesa-texto); }
+
+.botao-grande { min-height: 54px; font-size: 1.3rem; padding: 10px 28px; }
+.botao-pequeno { min-height: 36px; padding: 4px 14px; font-size: .9rem; }
+
+.botao-icone {
+  min-width: var(--alvo-toque);
+  padding: 6px 12px;
+  background: linear-gradient(180deg, rgba(243, 233, 214, .09), rgba(243, 233, 214, .03));
+  color: var(--mesa-texto);
+  box-shadow: inset 0 0 0 1.5px rgba(243, 233, 214, .26), var(--sombra-1);
+}
+.botao-icone:hover:not(:disabled) { box-shadow: inset 0 0 0 1.5px var(--luz), var(--sombra-1); color: var(--luz-clara); }
+
+.botao-fechar {
+  width: var(--alvo-toque);
+  padding: 0;
+  font-size: 1.8rem;
+  line-height: 1;
+  background: transparent;
+  color: var(--tinta);
+  box-shadow: inset 0 0 0 2px var(--tinta);
+  border-radius: 50%;
+}
+.botao-fechar:hover { background: rgba(29, 43, 58, .08); }
+
+/* ---------- Carregando ---------- */
+.spinner {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  flex: none;
+  border: 3px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  vertical-align: -.15em;
+  animation: girar .7s linear infinite;
+}
+
+/* ---------- Textos de apoio ---------- */
+.nota-serifa { font-family: var(--fonte-serifa); font-style: italic; color: var(--tinta-2); }
+
+.vazio {
+  font-family: var(--fonte-serifa);
+  font-style: italic;
+  color: var(--tinta-2);
+  padding: var(--espaco-3) 0;
+  display: flex;
+  align-items: center;
+  gap: var(--espaco-2);
+}
+
+.caixa-faixa {
+  font-family: var(--fonte-titulo);
+  font-size: .82rem;
+  font-weight: 700;
+  letter-spacing: .28em;
+  text-transform: uppercase;
+  color: var(--vermelho);
+}

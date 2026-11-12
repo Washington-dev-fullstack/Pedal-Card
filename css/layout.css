@@ -1,0 +1,276 @@
+/* =====================================================================
+   layout.css — Disposição das telas (mobile-first)
+   Celular: uma coluna, botão ACELERAR fixo embaixo.
+   Tablet (768px+): tabuleiro do piloto em linha.
+   Desktop (1100px+): pista + tabuleiro do piloto lado a lado.
+   Desktop largo (1360px+): diário à esquerda, pista ao centro, piloto à direita.
+   ===================================================================== */
+
+.tela { min-height: 100vh; }
+
+/* ======================= TELA INICIAL ======================= */
+.tela-inicial {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: var(--espaco-5);
+  padding: 0 var(--espaco-4) var(--espaco-6);
+}
+
+/* Celular: o render da mesa vira uma faixa no topo, recortada nos carros */
+.titulo-arte {
+  position: relative;
+  display: block;
+  width: calc(100% + 2 * var(--espaco-4));
+  height: clamp(220px, 58vw, 420px);
+  margin: 0 calc(-1 * var(--espaco-4));
+}
+.titulo-arte img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: 50% 50%; }
+.titulo-arte::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(26, 21, 17, 0) 55%, var(--mesa) 100%);
+}
+
+.inicial-conteudo {
+  position: relative;
+  width: 100%;
+  max-width: 1040px;
+  margin-top: -84px; /* a tampa "pousa" sobre a borda da foto */
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--espaco-6);
+  align-items: center;
+  justify-items: center;
+}
+
+.caixa-jogo { width: 100%; max-width: 470px; }
+.cartao-preparacao { width: 100%; max-width: 420px; }
+
+.rodape-inicial {
+  color: var(--mesa-texto-suave);
+  font-family: var(--fonte-serifa);
+  font-style: italic;
+  font-size: .85rem;
+  text-align: center;
+  max-width: 52ch;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, .8);
+}
+
+.linha-botoes { display: flex; gap: var(--espaco-3); flex-wrap: wrap; }
+.linha-botoes > .botao { flex: 1 1 140px; }
+
+/* Desktop: o render ocupa a mesa inteira; a ação fica à esquerda, na luz,
+   e o cartão de preparação fica à direita, na penumbra */
+@media (min-width: 900px) {
+  .tela-inicial {
+    justify-content: center;
+    padding: var(--espaco-6) clamp(24px, 4vw, 64px) var(--espaco-5);
+  }
+  .titulo-arte { position: absolute; inset: 0; width: auto; height: auto; margin: 0; z-index: -1; }
+  .titulo-arte img { object-position: 30% 50%; }
+  .titulo-arte::after {
+    background:
+      linear-gradient(90deg, rgba(26, 21, 17, 0) 52%, rgba(26, 21, 17, .42) 74%, rgba(26, 21, 17, .7) 100%),
+      linear-gradient(180deg, rgba(26, 21, 17, .3) 0, rgba(26, 21, 17, 0) 22%, rgba(26, 21, 17, 0) 80%, rgba(26, 21, 17, .55) 100%);
+  }
+  .inicial-conteudo {
+    max-width: 1320px;
+    min-height: calc(100vh - 150px);
+    margin-top: 0;
+    grid-template-columns: minmax(0, 1fr) 400px;
+    align-items: center;
+    justify-items: stretch;
+  }
+  .caixa-jogo { justify-self: start; align-self: start; }
+  .cartao-preparacao { justify-self: end; }
+}
+
+/* ======================= TELA DE JOGO ======================= */
+.tela-jogo { padding-bottom: 100px; } /* espaço do botão fixo no celular */
+
+.hud-topo {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  gap: var(--espaco-4);
+  padding: var(--espaco-2) var(--espaco-4);
+  /* a borda da mesa: madeira escura com um filete de luz da luminária */
+  background:
+    linear-gradient(180deg, rgba(255, 214, 160, .06), rgba(255, 214, 160, 0)),
+    var(--textura-madeira),
+    rgba(30, 23, 17, .94);
+  border-bottom: 1px solid rgba(242, 179, 91, .18);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, .45);
+  backdrop-filter: blur(6px);
+}
+
+.hud-logo { display: none; }
+.hud-ordem { display: none; }
+.hud-vez { flex: 1; min-width: 0; }
+.hud-acoes { display: flex; gap: var(--espaco-2); margin-left: auto; }
+.rotulo-botao-icone { display: none; }
+
+.jogo-grade {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-areas:
+    "pista"
+    "piloto"
+    "mao"
+    "acao"
+    "lateral";
+  gap: var(--espaco-4);
+  padding: var(--espaco-3);
+  max-width: 1680px;
+  margin: 0 auto;
+}
+
+.area-pista { grid-area: pista; min-width: 0; }
+.tabuleiro-piloto { grid-area: piloto; min-width: 0; }
+.area-mao { grid-area: mao; min-width: 0; }
+.area-acao { grid-area: acao; }
+.lateral { grid-area: lateral; display: grid; gap: var(--espaco-4); align-content: start; min-width: 0; }
+
+.pista-svg { display: block; width: 100%; height: auto; }
+
+/* Zonas do tabuleiro do piloto */
+.mat-zonas {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-areas:
+    "cambio motor"
+    "previsao previsao"
+    "pilhas pilhas";
+  gap: var(--espaco-3);
+}
+.zona-cambio { grid-area: cambio; }
+.zona-motor { grid-area: motor; }
+.zona-previsao { grid-area: previsao; }
+.zona-pilhas { grid-area: pilhas; }
+
+/* No celular o botão ACELERAR fica fixo no rodapé */
+.area-acao {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 30;
+  padding: var(--espaco-3) var(--espaco-4);
+  background: linear-gradient(180deg, rgba(26, 21, 17, 0), rgba(26, 21, 17, .97) 35%);
+}
+.area-acao .botao-acelerar { width: 100%; }
+.area-acao .dica-acao { display: none; }
+
+/* ======================= TELA DE FIM ======================= */
+.tela-fim { position: relative; overflow: hidden; padding: var(--espaco-6) var(--espaco-4) var(--espaco-7); }
+
+.fim-conteudo {
+  position: relative;
+  z-index: 1;
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--espaco-6);
+}
+
+.fim-cabecalho { text-align: center; display: grid; gap: var(--espaco-2); justify-items: center; }
+.fim-grade { display: grid; grid-template-columns: 1fr; gap: var(--espaco-5); }
+.fim-botoes { justify-content: center; }
+.fim-botoes > .botao { flex: 0 1 260px; }
+
+/* ======================= TABLET ======================= */
+@media (min-width: 768px) {
+  .hud-vez { flex: 0 1 auto; }
+  .hud-ordem { display: flex; }
+  .rotulo-botao-icone { display: inline; font-size: .85rem; }
+
+  .mat-zonas {
+    grid-template-columns: auto 1fr 1fr;
+    grid-template-areas:
+      "cambio motor pilhas"
+      "cambio previsao previsao";
+  }
+
+  .tela-jogo { padding-bottom: 0; }
+  .area-acao {
+    position: static;
+    padding: 0;
+    background: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--espaco-2);
+  }
+  .area-acao .dica-acao { display: block; }
+
+  .lateral { grid-template-columns: 1fr 1fr; }
+  .fim-grade { grid-template-columns: 1fr 1fr; }
+  .painel-historico { grid-column: 1 / -1; }
+}
+
+/* ======================= DESKTOP ======================= */
+@media (min-width: 1100px) {
+  .hud-logo { display: block; }
+
+  .jogo-grade {
+    grid-template-columns: minmax(0, 1fr) 360px;
+    grid-template-areas:
+      "pista   piloto"
+      "mao     acao"
+      "lateral lateral";
+    padding: var(--espaco-4) var(--espaco-5);
+    gap: var(--espaco-4) var(--espaco-5);
+    align-items: start;
+  }
+
+  .mat-zonas {
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas:
+      "cambio motor"
+      "previsao previsao"
+      "pilhas pilhas";
+  }
+
+  .pista-svg { max-height: max(320px, calc(100vh - 390px)); }
+
+  /* A mão e o ACELERAR ficam presos no pé da tela (como em jogos de cartas digitais):
+     em telas baixas, o tabuleiro rola por baixo e as cartas continuam à mão. */
+  .area-mao, .area-acao {
+    position: sticky;
+    bottom: 0;
+    z-index: 15;
+    align-self: end;
+  }
+  .area-mao {
+    margin: 0 -12px;
+    padding: 0 12px 4px;
+    background: linear-gradient(180deg, rgba(26, 21, 17, 0), rgba(26, 21, 17, .9) 45%);
+  }
+  .area-acao { padding-bottom: 18px; }
+  .fim-grade { grid-template-columns: 1fr 1.15fr; }
+}
+
+/* ======================= DESKTOP LARGO ======================= */
+@media (min-width: 1360px) {
+  .jogo-grade {
+    grid-template-columns: 270px minmax(0, 1fr) 360px;
+    grid-template-areas:
+      "lateral pista piloto"
+      "lateral mao   acao";
+  }
+  .lateral {
+    grid-template-columns: 1fr;
+    position: sticky;
+    top: 76px;
+  }
+}

@@ -1,0 +1,381 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pedal Card</title>
+  <meta name="description" content="Pedal Card: corrida de cartas no estilo jogo de tabuleiro. Controle a marcha, gerencie o calor do motor e não derrape nas curvas.">
+  <meta name="theme-color" content="#1A1511">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%231D2B3A'/%3E%3Ccircle cx='16' cy='16' r='12.5' fill='%23F7EEDB'/%3E%3Ccircle cx='16' cy='16' r='10' fill='none' stroke='%23C63A2B' stroke-width='3.4'/%3E%3Cpath fill-rule='evenodd' fill='%231D2B3A' d='M12.4 21.5 14.3 10.5H17.9a3.3 3.3 0 0 1-.6 6.6H15.4l-.8 4.4ZM15.8 12.6l-.5 2.6h1.9a1.3 1.3 0 0 0 .2-2.6Z'/%3E%3C/svg%3E">
+
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/componentes.css">
+  <link rel="stylesheet" href="css/animacoes.css">
+  <link rel="stylesheet" href="audio/controle-som.css">
+</head>
+<body>
+  <a class="pular-link" href="#conteudo">Pular para o conteúdo</a>
+
+  <main id="conteudo">
+
+    <!-- ============================ TELA INICIAL: TAMPA DA CAIXA ============================ -->
+    <section id="tela-inicial" class="tela tela-inicial" aria-labelledby="titulo-jogo">
+      <!-- Arte de fundo: render do Blender da maquete sobre a mesa (decorativa).
+           No celular entra um recorte em volta dos carros. -->
+      <picture class="titulo-arte" aria-hidden="true">
+        <source media="(max-width: 899px)" srcset="assets/titulo/mesa-celular.webp">
+        <img src="assets/titulo/mesa.webp" alt="" decoding="async" fetchpriority="high">
+      </picture>
+
+      <div class="inicial-conteudo">
+
+        <!-- Tampa impressa com o logo -->
+        <div class="caixa-jogo">
+          <div class="caixa-tampa">
+            <header class="caixa-titulo">
+              <p class="caixa-faixa">Grande Prêmio de Cartas</p>
+              <h1 id="titulo-jogo" class="logo-titulo" tabindex="-1" data-foco-inicial>Pedal Card</h1>
+              <p class="caixa-sub">Acelere, controle o calor do motor e não derrape nas curvas.</p>
+            </header>
+
+            <ul class="caixa-selos" aria-label="Informações do jogo">
+              <li><strong>2–3</strong><span>pilotos</span></li>
+              <li><strong>10'</strong><span>minutos</span></li>
+              <li><strong>12+</strong><span>anos</span></li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Cartão de preparação da corrida -->
+        <form id="form-inicio" class="cartao-preparacao papel" novalidate>
+          <h2 class="cartao-titulo">Preparação da corrida</h2>
+          <p class="cartao-sub">Monte o grid e escolha seus rivais.</p>
+
+          <div class="campo">
+            <label for="nome-jogador">Nome do piloto</label>
+            <input id="nome-jogador" name="nome" type="text" maxlength="20" autocomplete="nickname"
+                   placeholder="Ex.: Ana Turbo" required aria-describedby="erro-nome">
+            <p id="erro-nome" class="erro-campo" role="alert" hidden></p>
+          </div>
+
+          <fieldset class="segmentado">
+            <legend>Adversários</legend>
+            <div class="segmentado-opcoes">
+              <input type="radio" id="bots-1" name="bots" value="1">
+              <label for="bots-1">1 rival</label>
+              <input type="radio" id="bots-2" name="bots" value="2" checked>
+              <label for="bots-2">2 rivais</label>
+            </div>
+          </fieldset>
+
+          <fieldset class="segmentado">
+            <legend>Dificuldade</legend>
+            <div class="segmentado-opcoes">
+              <input type="radio" id="dif-facil" name="dificuldade" value="facil">
+              <label for="dif-facil">Fácil</label>
+              <input type="radio" id="dif-medio" name="dificuldade" value="medio" checked>
+              <label for="dif-medio">Médio</label>
+              <input type="radio" id="dif-dificil" name="dificuldade" value="dificil">
+              <label for="dif-dificil">Difícil</label>
+            </div>
+          </fieldset>
+
+          <button type="submit" id="botao-jogar" class="botao botao-principal botao-grande">Largar</button>
+          <div class="linha-botoes">
+            <button type="button" id="botao-regras-inicio" class="botao botao-secundario">Livro de regras</button>
+            <button type="button" id="botao-ranking-inicio" class="botao botao-secundario">Ranking</button>
+          </div>
+        </form>
+      </div>
+      <p class="rodape-inicial">Inspirado na mecânica de calor dos jogos de corrida de tabuleiro. Arte e regras próprias.</p>
+    </section>
+
+    <!-- ============================ TELA DE JOGO ============================ -->
+    <section id="tela-jogo" class="tela tela-jogo" aria-labelledby="titulo-hud" hidden>
+      <header class="hud-topo">
+        <h2 id="titulo-hud" class="hud-logo" tabindex="-1" data-foco-inicial>Pedal Card</h2>
+
+        <div class="hud-rodada">
+          <span class="hud-rotulo">Rodada</span>
+          <span id="hud-rodada" class="hud-rodada-numero">1</span>
+        </div>
+
+        <div class="hud-ordem">
+          <span class="hud-rotulo">Ordem da rodada</span>
+          <ol id="ordem-rodada" class="ordem-rodada" aria-label="Ordem de jogada desta rodada"></ol>
+        </div>
+
+        <p class="hud-vez"><span class="hud-rotulo">Vez de</span> <span id="hud-vez">—</span></p>
+
+        <div class="hud-acoes">
+          <button type="button" id="botao-regras-jogo" class="botao botao-icone" aria-label="Ver livro de regras">
+            <svg class="icone" viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" d="M4 4.5h6a2 2 0 0 1 2 2V20a1.5 1.5 0 0 0-1.5-1.5H4zM20 4.5h-6a2 2 0 0 0-2 2V20a1.5 1.5 0 0 1 1.5-1.5H20z"/></svg>
+            <span class="rotulo-botao-icone">Regras</span>
+          </button>
+          <button type="button" id="botao-sair" class="botao botao-icone" aria-label="Sair da corrida">
+            <svg class="icone" viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" d="M14 4H5v16h9M10 12h11M17 8l4 4-4 4"/></svg>
+            <span class="rotulo-botao-icone">Sair</span>
+          </button>
+        </div>
+      </header>
+
+      <div class="jogo-grade">
+        <!-- Tabuleiro da pista -->
+        <div class="area-pista">
+          <div class="tabuleiro">
+            <div class="tabuleiro-moldura">
+              <div id="banner-vez" class="banner-vez" role="status" aria-live="polite"></div>
+              <!-- Duas camadas com o mesmo viewBox: a maquete parada e, por cima, o que se mexe -->
+              <div class="pista-camadas">
+                <svg id="pista" class="pista-svg" viewBox="0 0 1000 690" role="img" aria-labelledby="pista-titulo"></svg>
+                <svg id="pista-pecas" class="pista-svg pista-pecas" viewBox="0 0 1000 690" aria-hidden="true" focusable="false"></svg>
+              </div>
+              <p id="pista-plaqueta" class="plaqueta"></p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tabuleiro do piloto (câmbio, motor, pilhas, previsão) -->
+        <section class="tabuleiro-piloto papel" aria-labelledby="titulo-mat">
+          <h3 id="titulo-mat" class="mat-titulo">Tabuleiro do piloto</h3>
+          <div class="mat-zonas">
+            <div class="zona zona-cambio">
+              <h4 class="zona-titulo">Câmbio</h4>
+              <div class="cambio">
+                <svg class="cambio-grade" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+                  <path d="M25 22V78M75 22V78M25 50H75" fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round" vector-effect="non-scaling-stroke"/>
+                </svg>
+                <div id="seletor-marcha" class="cambio-marchas" role="radiogroup" aria-label="Escolha a marcha"></div>
+              </div>
+              <p class="zona-nota">Pular 2 marchas custa 1 <span class="sr-only">Calor</span><span class="cubo-texto" aria-hidden="true"></span></p>
+            </div>
+
+            <div class="zona zona-motor">
+              <h4 class="zona-titulo">Motor <span id="motor-numero" class="motor-numero">6/6</span></h4>
+              <div id="medidor-calor" class="motor" role="meter" aria-label="Calor no motor"
+                   aria-valuemin="0" aria-valuemax="6" aria-valuenow="6"></div>
+              <p class="zona-nota">Cada cubo é 1 Calor para gastar nas curvas.</p>
+            </div>
+
+            <div class="zona zona-pilhas">
+              <h4 class="zona-titulo">Cartas</h4>
+              <div id="info-baralho" class="pilhas"></div>
+            </div>
+
+            <div class="zona zona-previsao">
+              <h4 class="zona-titulo">Previsão</h4>
+              <div id="previsao" class="bloco-notas" aria-live="polite"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Mão de cartas -->
+        <section class="area-mao" aria-labelledby="titulo-mao">
+          <div class="mao-cabecalho">
+            <h3 id="titulo-mao" class="rotulo-mesa">Sua mão</h3>
+            <p id="instrucao-mao" class="instrucao-mao"></p>
+          </div>
+          <div id="mao" class="mao" role="group" aria-labelledby="titulo-mao"></div>
+        </section>
+
+        <div class="area-acao">
+          <button type="button" id="botao-acelerar" class="botao-acelerar" disabled>Acelerar</button>
+          <p id="dica-acao" class="dica-acao"></p>
+        </div>
+
+        <!-- Classificação e diário de corrida -->
+        <aside class="lateral" aria-label="Classificação e diário de corrida">
+          <section class="painel papel">
+            <h3 class="painel-titulo">Classificação</h3>
+            <ol id="classificacao" class="classificacao"></ol>
+          </section>
+          <section class="painel papel painel-diario">
+            <h3 class="painel-titulo">Diário de corrida</h3>
+            <ul id="log-eventos" class="log-eventos" aria-live="polite" aria-relevant="additions"></ul>
+          </section>
+        </aside>
+      </div>
+    </section>
+
+    <!-- ============================ TELA DE FIM ============================ -->
+    <section id="tela-fim" class="tela tela-fim" aria-labelledby="fim-titulo" hidden>
+      <div class="fim-conteudo">
+        <header class="fim-cabecalho">
+          <p class="caixa-faixa">Resultado oficial · <span id="fim-rodadas">0</span> rodadas</p>
+          <h2 id="fim-titulo" class="fim-titulo" tabindex="-1" data-foco-inicial>Bandeirada</h2>
+          <p id="fim-subtitulo" class="fim-subtitulo"></p>
+        </header>
+
+        <div id="podio" class="podio"></div>
+
+        <div class="fim-grade">
+          <section class="painel papel folha-pontos">
+            <h3 class="painel-titulo">Folha de resultados</h3>
+            <div class="tabela-rolagem"><table id="tabela-estatisticas" class="tabela-estatisticas"></table></div>
+          </section>
+          <section class="painel papel">
+            <h3 class="painel-titulo">Ranking de pilotos</h3>
+            <div id="ranking-fim" class="tabela-rolagem"></div>
+          </section>
+          <section class="painel papel painel-historico">
+            <h3 class="painel-titulo">Suas jogadas</h3>
+            <div id="historico-fim" class="tabela-rolagem"></div>
+          </section>
+        </div>
+
+        <div class="linha-botoes fim-botoes">
+          <button type="button" id="botao-nova-partida" class="botao botao-principal botao-grande">Revanche</button>
+          <button type="button" id="botao-voltar-inicio" class="botao botao-secundario-escuro botao-grande">Voltar à caixa</button>
+        </div>
+      </div>
+      <div id="confete" class="confete" aria-hidden="true"></div>
+    </section>
+  </main>
+
+  <!-- ============================ LIVRO DE REGRAS ============================ -->
+  <dialog id="modal-regras" class="modal" aria-labelledby="titulo-regras">
+    <div class="modal-caixa papel">
+      <header class="modal-cabecalho">
+        <div>
+          <p class="caixa-faixa">Livro de regras</p>
+          <h2 id="titulo-regras">Como jogar</h2>
+        </div>
+        <button type="button" class="botao botao-fechar" data-fechar-modal="modal-regras" aria-label="Fechar livro de regras">&times;</button>
+      </header>
+      <div class="modal-corpo regras">
+        <p class="regras-objetivo"><strong>Objetivo:</strong> ser o primeiro a cruzar a chegada, na casa 47. São 48 casas e 1 volta. A pista é sorteada a cada partida: de 4 a 6 curvas, cada uma com seu limite.</p>
+
+        <div class="regras-grade">
+          <article class="regra">
+            <div class="regra-ilustra regra-marchas" aria-hidden="true"><span>1</span><span>2</span><span class="ativa">3</span><span>4</span></div>
+            <h3><span class="regra-num">1</span> Marcha</h3>
+            <p>A marcha diz <strong>quantas cartas</strong> você joga: marcha 3 = 3 cartas. Mudar 1 marcha é grátis; <strong>pular 2 custa 1 Calor</strong>; pular 3 não pode.</p>
+          </article>
+          <article class="regra">
+            <div class="regra-ilustra" aria-hidden="true">
+              <span class="mini-carta v2">2</span><span class="mini-carta v3">3</span><span class="mini-carta v4">4</span>
+            </div>
+            <h3><span class="regra-num">2</span> Cartas</h3>
+            <p>A <strong>velocidade é a soma</strong> das cartas jogadas, e você anda essa quantidade de casas. Se a casa estiver ocupada, você para na livre mais próxima atrás.</p>
+          </article>
+          <article class="regra">
+            <div class="regra-ilustra" aria-hidden="true">
+              <span class="mini-cubo"></span><span class="mini-cubo"></span><span class="mini-cubo"></span><span class="mini-cubo vazio"></span>
+            </div>
+            <h3><span class="regra-num">3</span> Calor</h3>
+            <p>O motor começa com <strong>6 cubos de Calor</strong>. O Calor pago vai para o descarte e depois volta embaralhado para a sua mão como <strong>carta morta</strong>, que não pode ser jogada.</p>
+          </article>
+          <article class="regra">
+            <div class="regra-ilustra" aria-hidden="true"><span class="mini-escudo"><small>MÁX</small>4</span></div>
+            <h3><span class="regra-num">4</span> Curvas</h3>
+            <p>Cada curva tem um <strong>limite</strong>. Se passar por ela mais rápido, paga a diferença em Calor. Ex.: velocidade 7 numa curva de limite 4 = 3 Calor.</p>
+          </article>
+          <article class="regra regra-perigo">
+            <div class="regra-ilustra" aria-hidden="true"><span class="mini-alerta">!</span></div>
+            <h3><span class="regra-num">5</span> Derrapagem</h3>
+            <p>Sem Calor para pagar a curva, você <strong>derrapa</strong>: para na casa antes da curva e volta para a <strong>marcha 1</strong>.</p>
+          </article>
+          <article class="regra regra-frio">
+            <div class="regra-ilustra" aria-hidden="true"><span class="mini-floco">❄</span></div>
+            <h3><span class="regra-num">6</span> Resfriar</h3>
+            <p>Jogando na <strong>marcha 1</strong>, 1 Calor volta ao motor: primeiro uma carta de Calor da sua mão; se não houver, uma do descarte.</p>
+          </article>
+          <article class="regra regra-vacuo">
+            <div class="regra-ilustra" aria-hidden="true">
+              <span class="mini-carro azul"></span><span class="mini-carro vermelho"></span><span class="mini-rastro">» +3</span>
+            </div>
+            <h3><span class="regra-num">7</span> Rastro</h3>
+            <p>Terminou o movimento <strong>colado atrás de outro carro</strong>? O rastro de ar dele puxa você <strong>até 3 casas</strong> para a frente, até a casa livre mais distante. O rastro <strong>só vale na reta</strong>: ele para antes da próxima curva, então nunca custa Calor. Quem derrapou ou não andou não pega rastro.</p>
+          </article>
+        </div>
+
+        <div class="regras-colunas">
+          <section>
+            <h3 class="regras-subtitulo">Turnos e vitória</h3>
+            <ul class="regras-lista">
+              <li>A cada rodada, quem está <strong>na frente joga primeiro</strong>.</li>
+              <li>No fim do turno, compre cartas até ter 7 na mão.</li>
+              <li>A corrida acaba quando alguém chega na casa 47. Os outros são ordenados pela posição (empate: menos derrapagens). Pontos: 1º = 3, 2º = 2, 3º = 1.</li>
+            </ul>
+          </section>
+          <section>
+            <h3 class="regras-subtitulo">Atalhos de teclado</h3>
+            <ul class="regras-lista">
+              <li><kbd>1</kbd> a <kbd>4</kbd>: escolher a marcha</li>
+              <li><kbd>←</kbd> <kbd>→</kbd>: navegar pelas cartas · <kbd>Espaço</kbd>: selecionar</li>
+              <li><kbd>Enter</kbd> (em uma carta): acelerar · <kbd>Esc</kbd>: fechar</li>
+              <li><kbd>M</kbd>: liga e desliga a música</li>
+              <li><kbd>N</kbd>: liga e desliga os efeitos sonoros</li>
+            </ul>
+          </section>
+        </div>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- ============================ RANKING ============================ -->
+  <dialog id="modal-ranking" class="modal modal-estreito" aria-labelledby="titulo-ranking">
+    <div class="modal-caixa papel">
+      <header class="modal-cabecalho">
+        <div>
+          <p class="caixa-faixa">Hall da fama</p>
+          <h2 id="titulo-ranking">Ranking de pilotos</h2>
+        </div>
+        <button type="button" class="botao botao-fechar" data-fechar-modal="modal-ranking" aria-label="Fechar ranking">&times;</button>
+      </header>
+      <div class="modal-corpo">
+        <p class="nota-serifa">Ordenado por vitórias; o desempate é a corrida mais rápida (menos rodadas).</p>
+        <div id="ranking-modal-conteudo" class="tabela-rolagem"></div>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- Cartaz da prova: pousa na mesa e cobre a troca da tela inicial para o tabuleiro -->
+  <div id="cartaz-largada" class="sobreposicao cartaz-largada" role="status" aria-live="assertive" hidden>
+    <div class="cartaz">
+      <p class="caixa-faixa">Grande Prêmio de Cartas</p>
+      <p class="cartaz-circuito"></p>
+      <p class="cartaz-detalhes"></p>
+      <div class="cartaz-xadrez" aria-hidden="true"></div>
+    </div>
+  </div>
+
+  <!-- Semáforo de largada -->
+  <div id="semaforo" class="sobreposicao semaforo" role="status" aria-live="assertive" hidden>
+    <div class="semaforo-caixa" aria-hidden="true">
+      <span class="luz"></span><span class="luz"></span><span class="luz"></span>
+    </div>
+    <p class="semaforo-texto">3</p>
+  </div>
+
+  <!-- Bandeirada (fim da corrida) -->
+  <div id="bandeirada" class="sobreposicao bandeirada" role="status" aria-live="assertive" hidden>
+    <div class="bandeira-xadrez" aria-hidden="true"></div>
+    <p class="bandeirada-texto">Bandeirada!</p>
+  </div>
+
+  <!-- Avisos rápidos -->
+  <div id="toasts" class="toasts"></div>
+
+  <!-- Scripts clássicos (sem módulos), na ordem de dependência -->
+  <script src="js/config.js"></script>
+  <script src="js/mock-engine.js"></script>
+  <script src="js/mock-api.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/icones.js"></script>
+  <script src="js/estado-ui.js"></script>
+  <script src="js/ui-pista.js"></script>
+  <script src="js/ui-mao.js"></script>
+  <script src="js/ui-hud.js"></script>
+  <script src="js/ui-eventos.js"></script>
+  <script src="js/ui-telas.js"></script>
+  <!-- Som (pasta audio/): música e efeitos gerados em código, sem arquivos de áudio -->
+  <script src="audio/AudioDirector.js"></script>
+  <script src="audio/trilha-jogo.js"></script>
+  <script src="audio/Efeitos.js"></script>
+  <script src="audio/efeitos-jogo.js"></script>
+  <script src="audio/controle-som.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,1407 @@
+/* =====================================================================
+   componentes.css — Visual de cada peça do jogo
+   ===================================================================== */
+
+/* =====================================================================
+   TELA INICIAL — a mesa renderizada + tampa impressa + cartão de preparação
+   ===================================================================== */
+.caixa-jogo { perspective: 1200px; }
+
+/* Tampa impressa: cartaz de corrida com o logo (papel creme, meio-tom de tinta) */
+.caixa-tampa {
+  position: relative;
+  padding: 18px 22px 18px;
+  border-radius: 6px;
+  background-color: var(--papel);
+  background-image:
+    radial-gradient(circle at 100% 0, rgba(226, 163, 59, .38) 0 26%, rgba(226, 163, 59, 0) 27%),
+    var(--meio-tom),
+    var(--textura-papel);
+  background-size: auto, 7px 7px, auto;
+  color: var(--tinta);
+  transform: rotate(-1.2deg);
+  box-shadow: inset 0 1px 0 rgba(255, 250, 238, .8), inset 0 0 0 1px rgba(29, 43, 58, .25), var(--sombra-3);
+}
+
+.caixa-titulo { text-align: left; }
+.caixa-titulo .caixa-faixa { margin-bottom: 2px; color: var(--tinta); letter-spacing: .32em; }
+
+.logo-titulo {
+  font-size: clamp(3.4rem, 12vw, 5.6rem);
+  font-weight: 700;
+  line-height: .86;
+  letter-spacing: -.005em;
+  text-transform: uppercase;
+  color: var(--vermelho);
+  transform: skewX(var(--inclinacao));
+  transform-origin: left bottom;
+  /* a tinta azul-marinho levemente fora de registro, como num cartaz serigrafado */
+  text-shadow: 4px 3px 0 var(--tinta);
+  outline: none;
+}
+
+.caixa-sub {
+  margin-top: 12px;
+  max-width: 34ch;
+  font-family: var(--fonte-serifa);
+  font-style: italic;
+  font-size: 1.02rem;
+  line-height: 1.4;
+  color: var(--tinta-2);
+}
+
+/* Selos carimbados: jogadores, duração e idade */
+.caixa-selos {
+  list-style: none;
+  margin: 14px 0 0;
+  padding: 0;
+  display: flex;
+  gap: var(--espaco-3);
+}
+.caixa-selos li {
+  width: 66px;
+  height: 66px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: 2px solid var(--tinta);
+  box-shadow: inset 0 0 0 3px var(--papel), inset 0 0 0 4.5px var(--tinta);
+  line-height: 1;
+  transform: rotate(-6deg);
+}
+.caixa-selos li:nth-child(2) { transform: rotate(4deg); }
+.caixa-selos strong { font-family: var(--fonte-titulo); font-size: 1.25rem; }
+.caixa-selos span { font-size: .58rem; letter-spacing: .08em; text-transform: uppercase; color: var(--tinta-2); margin-top: 3px; }
+
+/* Cartão de preparação: ficha impressa sobre a mesa */
+.cartao-preparacao {
+  display: flex;
+  flex-direction: column;
+  gap: var(--espaco-4);
+  padding: var(--espaco-5);
+  transform: rotate(.6deg);
+  box-shadow: inset 0 1px 0 rgba(255, 250, 238, .8), inset 0 0 0 1px rgba(29, 43, 58, .22), var(--sombra-3);
+}
+.cartao-titulo {
+  font-size: 1.7rem;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  padding-bottom: 8px;
+  border-bottom: 3px double var(--tinta);
+}
+.cartao-sub { font-family: var(--fonte-serifa); font-style: italic; color: var(--tinta-2); margin-top: -8px; }
+
+/* ---------- Campos de formulário (tinta sobre papel) ---------- */
+.campo { display: grid; gap: 6px; }
+
+.campo label,
+.segmentado legend {
+  font-family: var(--fonte-titulo);
+  font-size: .9rem;
+  font-weight: 700;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--tinta-2);
+}
+
+.campo input {
+  min-height: 48px;
+  padding: 8px 14px;
+  background: var(--papel-claro);
+  border: 2px solid var(--tinta-3);
+  border-radius: var(--raio-pequeno);
+  color: var(--tinta);
+  font-size: 1.05rem;
+  transition: border-color .2s, box-shadow .2s;
+}
+.campo input::placeholder { color: #7C8691; }
+.campo input:focus { border-color: var(--tinta); box-shadow: 0 0 0 3px rgba(242, 179, 91, .55); outline: none; }
+.campo input[aria-invalid="true"] { border-color: var(--vermelho); }
+
+.erro-campo { color: var(--vermelho-escuro); font-size: .9rem; font-weight: 600; }
+.erro-campo::before { content: "⚠ "; }
+
+.segmentado { border: 0; margin: 0; padding: 0; display: grid; gap: 6px; }
+.segmentado-opcoes { display: flex; border: 2px solid var(--tinta); border-radius: var(--raio-pequeno); overflow: hidden; }
+.segmentado-opcoes input { position: absolute; opacity: 0; pointer-events: none; }
+.segmentado-opcoes label {
+  flex: 1;
+  min-height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  font-family: var(--fonte-titulo);
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: .04em;
+  color: var(--tinta);
+  cursor: pointer;
+  transition: background .15s, color .15s;
+}
+.segmentado-opcoes label + input + label { border-left: 2px solid var(--tinta); }
+.segmentado-opcoes label:hover { background: rgba(29, 43, 58, .08); }
+.segmentado-opcoes input:checked + label { background: var(--tinta); color: var(--papel-claro); }
+.segmentado-opcoes input:checked + label::before { content: "●"; font-size: .6em; color: var(--luz); }
+.segmentado-opcoes input:focus-visible + label { outline: 3px solid var(--luz); outline-offset: -5px; }
+
+/* =====================================================================
+   HUD DO TOPO — a borda da mesa, com o logo colado como etiqueta
+   ===================================================================== */
+.hud-rotulo {
+  display: block;
+  font-family: var(--fonte-titulo);
+  font-size: .68rem;
+  font-weight: 700;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--mesa-texto-suave);
+}
+
+/* Logo pequeno: etiqueta impressa (a mesma tinta do logo da tampa) */
+.hud-logo {
+  flex: none;
+  padding: 1px 12px 3px;
+  border-radius: 3px;
+  background: var(--papel);
+  color: var(--vermelho);
+  font-size: 1.4rem;
+  text-transform: uppercase;
+  letter-spacing: 0;
+  text-shadow: 2px 1.5px 0 var(--tinta);
+  transform: rotate(-1.5deg) skewX(var(--inclinacao));
+  box-shadow: var(--sombra-1);
+  outline: none;
+}
+
+.hud-rodada { display: flex; flex-direction: column; align-items: center; }
+.hud-rodada-numero { font-family: var(--fonte-numeros); font-size: 1.5rem; font-weight: 700; line-height: 1; color: var(--luz); }
+
+.hud-ordem { flex-direction: column; }
+.ordem-rodada { list-style: none; margin: 4px 0 0 6px; padding: 0; display: flex; align-items: center; gap: 12px; }
+.ordem-slot {
+  position: relative;
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  border-radius: 5px;
+  background-color: var(--papel);
+  background-image: var(--textura-papel);
+  box-shadow: inset 0 0 0 1px rgba(29, 43, 58, .3), var(--sombra-1);
+  transition: transform .2s, box-shadow .2s;
+}
+.ordem-pos {
+  position: absolute;
+  top: -6px;
+  left: -6px;
+  width: 16px;
+  height: 16px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--tinta);
+  color: var(--papel-claro);
+  font-family: var(--fonte-numeros);
+  font-size: .62rem;
+  font-weight: 700;
+}
+.ordem-slot.na-vez { transform: translateY(-3px); box-shadow: 0 0 0 3px var(--luz), var(--sombra-2); }
+.ordem-slot.ja-jogou { opacity: .45; }
+
+.hud-vez { display: flex; flex-direction: column; }
+#hud-vez {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--fonte-titulo);
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--mesa-texto);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* =====================================================================
+   TABULEIRO DA PISTA — a maquete sobre a base de madeira
+   ===================================================================== */
+.tabuleiro {
+  padding: 10px 12px 12px;
+  border-radius: 12px;
+  background:
+    linear-gradient(170deg, rgba(255, 214, 160, .14), rgba(255, 214, 160, 0) 38%),
+    var(--textura-madeira),
+    linear-gradient(160deg, #4A3726, #2D2016 58%, #22180F);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 222, 176, .28),
+    inset 0 -2px 0 rgba(0, 0, 0, .45),
+    0 6px 0 #130D08,
+    var(--sombra-3);
+}
+.tabuleiro-moldura { position: relative; padding-top: 42px; }
+
+/* Terreno "afundado" dentro da base */
+.pista-camadas {
+  position: relative;
+  overflow: hidden;
+  border-radius: 5px;
+  background: #3F5A22;
+}
+.pista-camadas::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: inset 0 3px 7px rgba(0, 0, 0, .55), inset 0 0 0 1px rgba(0, 0, 0, .45);
+  pointer-events: none;
+}
+.pista-svg { overflow: visible; }
+.pista-pecas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100% !important;
+  max-height: none !important;
+  pointer-events: none;
+  will-change: transform; /* camada própria: animar um carro não redesenha a maquete */
+}
+.camada-carros { pointer-events: visiblePainted; }
+
+/* Plaqueta de latão com o nome do circuito */
+.plaqueta {
+  display: table;
+  margin: 9px auto 0;
+  padding: 3px 14px 4px;
+  border-radius: 3px;
+  background: linear-gradient(180deg, #EBDDB4, #C8AC6E 55%, #B39557);
+  color: #2A2214;
+  font-family: var(--fonte-titulo);
+  font-size: .8rem;
+  font-weight: 700;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .6), inset 0 -1px 0 rgba(0, 0, 0, .3), var(--sombra-1);
+}
+.plaqueta:empty { display: none; }
+
+/* Bandeirola impressa da vez, pendurada no alto da maquete */
+.banner-vez {
+  position: absolute;
+  top: -2px;
+  left: 50%;
+  z-index: 5;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: var(--espaco-2);
+  max-width: calc(100% - 24px);
+  padding: 5px 20px 11px;
+  background: var(--papel-claro);
+  color: var(--tinta);
+  font-family: var(--fonte-titulo);
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 50% calc(100% - 6px), 0 100%);
+  filter: drop-shadow(2px 4px 3px rgba(10, 6, 2, .55));
+}
+.banner-vez:empty { display: none; }
+.banner-humano { background: var(--azul); color: #fff; }
+.banner-bot { background: var(--vermelho); color: #fff; }
+.banner-carregando { background: var(--luz); color: var(--tinta); }
+
+/* ---------- Camada parada: asfalto, zebras, casas ---------- */
+.pista-sombra { fill: none; stroke: #0E0904; stroke-opacity: .2; stroke-width: 84; stroke-linejoin: round; }
+.pista-sombra-perto { stroke-opacity: .3; stroke-width: 78; }
+.pista-mureta { fill: none; stroke: #D3CAB8; stroke-width: 74; stroke-linejoin: round; }
+.zebra-base { fill: none; stroke: #F3E9D6; stroke-width: 76; stroke-linejoin: round; }
+.zebra-listras { fill: none; stroke: var(--vermelho); stroke-width: 76; stroke-dasharray: 9 9; stroke-linejoin: round; }
+.pista-faixa { fill: none; stroke: #EFE7D6; stroke-width: 62; stroke-linejoin: round; }
+.pista-asfalto { fill: none; stroke: url(#tex-asfalto); stroke-width: 56; stroke-linejoin: round; }
+
+.divisao-casa { stroke: #F3E9D6; stroke-opacity: .42; stroke-width: 2; }
+.linha-curva { stroke: var(--vermelho); stroke-width: 5; }
+.grid-largada path { fill: none; stroke: #F3E9D6; stroke-opacity: .75; stroke-width: 2; }
+.casa-numero {
+  font-family: var(--fonte-numeros);
+  font-size: 13px;
+  font-weight: 700;
+  fill: #F3E9D6;
+  fill-opacity: .72;
+  pointer-events: none;
+}
+.casa-curva-numero { fill: #FFB4A8; fill-opacity: 1; }
+
+/* Etiquetas impressas (largada, chegada, casa da curva) */
+.etiqueta-fundo { fill: var(--papel-claro); stroke: var(--tinta); stroke-width: 1.2; }
+.etiqueta-texto {
+  font-family: var(--fonte-titulo);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  fill: var(--tinta);
+}
+.etiqueta-linha .etiqueta-texto { font-size: 13px; letter-spacing: 3px; }
+
+/* Placas de curva: objeto (poste) com a face impressa */
+.placa-guia { stroke: #F3E9D6; stroke-opacity: .5; stroke-width: 1.5; stroke-dasharray: 2 5; }
+.placa-poste { fill: #4F453A; }
+.placa-base { fill: #2E2720; }
+.placa-disco { fill: var(--papel-claro); stroke: var(--tinta); stroke-width: 1.5; }
+.placa-aro { fill: none; stroke: var(--vermelho); stroke-width: 5.5; }
+.placa-limite { font-family: var(--fonte-numeros); font-size: 22px; font-weight: 700; fill: var(--tinta); }
+
+/* Faixa impressa na arquibancada */
+.faixa-gp rect { fill: var(--papel-claro); }
+.faixa-gp text {
+  font-family: var(--fonte-titulo);
+  font-size: 8.5px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  fill: var(--vermelho);
+}
+
+/* Espelho de água (circuitos da Lagoa e da Represa) */
+.agua-margem { fill: #CDB98A; stroke: #CDB98A; stroke-width: 22; stroke-linejoin: round; }
+.agua-espelho { fill: url(#agua); }
+.agua-reflexo { fill: none; stroke: #DCEFF2; stroke-opacity: .35; stroke-width: 5; stroke-dasharray: 26 60; }
+
+.luz-mesa { pointer-events: none; }
+
+/* ---------- Camada que se mexe: previsão, carros, efeitos ---------- */
+.rota-prevista { fill: none; stroke-width: 16; stroke-linecap: round; opacity: 0; transition: opacity .2s; }
+.rota-prevista.visivel { opacity: .5; }
+.rota-ok { stroke: #8FD0F2; }
+.rota-alerta { stroke: var(--luz); }
+.rota-perigo { stroke: #FF6B57; }
+
+.fantasma { opacity: 0; pointer-events: none; transition: opacity .2s; color: var(--papel-claro); }
+.fantasma.visivel { opacity: 1; }
+.fantasma .peca-contorno { fill: rgba(247, 238, 219, .1); stroke: currentColor; stroke-width: 2.2; stroke-dasharray: 5 4; }
+.fantasma-carro { opacity: .5; }
+.fantasma-alerta { color: var(--luz); }
+.fantasma-perigo { color: #FF8A7A; }
+.fantasma-rotulo {
+  font-family: var(--fonte-titulo);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  fill: var(--tinta);
+}
+
+/* Carros: imagens renderizadas; selo impresso com forma + cor + número */
+.selo-fundo { fill: var(--papel-claro); stroke: var(--tinta); stroke-width: 1.5; }
+.carro-numero {
+  font-family: var(--fonte-numeros);
+  font-size: 14px;
+  font-weight: 700;
+  fill: #fff;
+  paint-order: stroke;
+  stroke: var(--tinta);
+  stroke-width: 2.4px;
+  stroke-linejoin: round;
+}
+.rastro { opacity: 0; transition: opacity .2s; }
+.em-movimento .rastro { opacity: 1; }
+.anel-jogador { fill: none; stroke: var(--luz); stroke-width: 3; stroke-dasharray: 7 5; }
+.rotulo-voce {
+  font-family: var(--fonte-titulo);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  fill: var(--luz);
+  paint-order: stroke;
+  stroke: #120C08;
+  stroke-width: 4px;
+  stroke-linejoin: round;
+}
+
+/* Efeitos flutuantes */
+.flutuante {
+  font-family: var(--fonte-titulo);
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  paint-order: stroke;
+  stroke: var(--papel-claro);
+  stroke-width: 6;
+  stroke-linejoin: round;
+}
+.flutuante-calor { fill: var(--brasa-texto); }
+.flutuante-frio { fill: var(--gelo-texto); }
+.flutuante-perigo { fill: var(--vermelho); font-size: 26px; }
+.flutuante-sucesso { fill: var(--verde-texto); }
+.flutuante-vacuo { fill: var(--azul); }
+
+.fumaca { opacity: 0; }
+
+/* =====================================================================
+   TABULEIRO DO PILOTO — folha impressa com as peças físicas por cima
+   (manopla e cubos são imagens renderizadas no Blender)
+   ===================================================================== */
+.tabuleiro-piloto { padding: 14px 14px 16px; }
+
+.mat-titulo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+  font-size: 1.05rem;
+  text-transform: uppercase;
+  letter-spacing: .16em;
+  color: var(--tinta);
+}
+.mat-titulo::after { content: ""; flex: 1; height: 0; border-top: 3px double var(--tinta); }
+
+/* Zonas impressas: filete duplo de tinta, como num tabuleiro de verdade */
+.zona {
+  position: relative;
+  padding: 8px 10px 10px;
+  border-radius: 3px;
+  box-shadow: inset 0 0 0 1.5px rgba(29, 43, 58, .8), inset 0 0 0 4px var(--papel), inset 0 0 0 5px rgba(29, 43, 58, .28);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.zona-titulo {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  font-size: .8rem;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--tinta-2);
+}
+
+.zona-nota {
+  font-family: var(--fonte-serifa);
+  font-style: italic;
+  font-size: .78rem;
+  line-height: 1.3;
+  color: var(--tinta-2);
+}
+.cubo-texto {
+  display: inline-block;
+  width: .95em;
+  height: .95em;
+  margin-left: 2px;
+  background: url("../assets/pecas/cubo-calor.webp") center / contain no-repeat;
+  vertical-align: -.15em;
+}
+
+/* ---------- Câmbio em H (grade impressa + manopla de verdade) ---------- */
+.cambio {
+  position: relative;
+  width: 100%;
+  max-width: 170px;
+  height: 196px;
+  margin: 0 auto;
+}
+.cambio-grade {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  color: rgba(29, 43, 58, .7);
+}
+.cambio-marchas { position: absolute; inset: 0; }
+
+.marcha-opcao {
+  position: absolute;
+  width: 48px;
+  height: 48px;
+  transform: translate(-50%, -50%);
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: var(--papel-2);
+  box-shadow: inset 0 0 0 2px var(--tinta), inset 0 0 0 5px var(--papel-2), inset 0 0 0 6px rgba(29, 43, 58, .35);
+  color: var(--tinta);
+  cursor: pointer;
+  transition: box-shadow .15s, background .15s;
+}
+.marcha-opcao[data-marcha="1"] { left: 25%; top: 22%; }
+.marcha-opcao[data-marcha="2"] { left: 25%; top: 78%; }
+.marcha-opcao[data-marcha="3"] { left: 75%; top: 22%; }
+.marcha-opcao[data-marcha="4"] { left: 75%; top: 78%; }
+
+.marcha-numero { font-family: var(--fonte-numeros); font-size: 1.35rem; font-weight: 700; line-height: 1; }
+
+.marcha-info {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  white-space: nowrap;
+  font-family: var(--fonte-titulo);
+  font-size: .72rem;
+  font-weight: 700;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  color: var(--tinta-2);
+  pointer-events: none;
+}
+.marcha-info .icone { width: 12px; height: 12px; }
+.marcha-opcao[data-marcha="1"] .marcha-info,
+.marcha-opcao[data-marcha="3"] .marcha-info { bottom: calc(100% + 2px); }
+.marcha-opcao[data-marcha="2"] .marcha-info,
+.marcha-opcao[data-marcha="4"] .marcha-info { top: calc(100% + 2px); }
+.marcha-opcao.com-custo .marcha-info { color: var(--brasa-texto); }
+.marcha-info .icone-frio { color: var(--gelo-texto); }
+
+.marcha-opcao:hover:not(:disabled) { background: var(--papel-3); }
+
+/* A manopla (objeto renderizado) fica na marcha atual */
+.marcha-opcao.atual {
+  background: url("../assets/pecas/manopla.webp") center / 112% no-repeat;
+  color: var(--papel-claro);
+  box-shadow: none;
+  filter: drop-shadow(3px 5px 3px rgba(14, 8, 3, .55));
+}
+.marcha-opcao.atual .marcha-numero { text-shadow: 0 1px 2px rgba(0, 0, 0, .8); }
+/* Marcha escolhida para este turno: aro âmbar */
+.marcha-opcao.selecionada:not(.atual) {
+  background: #F6D9A2;
+  color: var(--tinta);
+  box-shadow: inset 0 0 0 2px var(--tinta), 0 0 0 3px var(--luz);
+}
+.marcha-opcao.selecionada.atual { box-shadow: 0 0 0 3px var(--luz); }
+.marcha-opcao:disabled {
+  cursor: not-allowed;
+  color: rgba(29, 43, 58, .5);
+  background: repeating-linear-gradient(135deg, var(--papel-2) 0 4px, rgba(29, 43, 58, .14) 4px 5.5px);
+}
+.marcha-opcao.atual:disabled { color: var(--papel-claro); background: url("../assets/pecas/manopla.webp") center / 112% no-repeat; }
+
+/* ---------- Motor: bandeja rebaixada com cubos de Calor ---------- */
+.motor-numero { font-family: var(--fonte-numeros); font-size: 1rem; letter-spacing: 0; color: var(--brasa-texto); }
+
+.motor {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  padding: 10px;
+  border-radius: 6px;
+  background: linear-gradient(180deg, #2A2119, #1C1612);
+  box-shadow: inset 0 3px 8px rgba(0, 0, 0, .65), inset 0 0 0 1px rgba(0, 0, 0, .5), 0 1px 0 rgba(255, 250, 238, .7);
+}
+.slot-calor {
+  height: 38px;
+  display: grid;
+  place-items: center;
+  border-radius: 5px;
+  box-shadow: inset 0 0 0 1.5px rgba(243, 233, 214, .14), inset 0 2px 4px rgba(0, 0, 0, .5);
+}
+.cubo-madeira {
+  width: 32px;
+  height: 32px;
+  background: url("../assets/pecas/cubo-calor.webp") center / contain no-repeat;
+  filter: drop-shadow(2px 3px 2px rgba(0, 0, 0, .6));
+}
+.motor.motor-critico { box-shadow: inset 0 3px 8px rgba(0, 0, 0, .65), 0 0 0 3px var(--vermelho); }
+
+/* ---------- Pilhas de cartas ---------- */
+.pilhas { display: flex; align-items: flex-end; justify-content: space-around; gap: 10px; }
+.pilha { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+.pilha-cartas {
+  width: 46px;
+  height: 64px;
+  border-radius: 5px;
+}
+/* Verso das cartas: azul-marinho listrado com a silhueta do carro num medalhão */
+.pilha-verso {
+  background:
+    url("../assets/cartas/verso-carro.webp") center / 76% no-repeat,
+    radial-gradient(circle, rgba(29, 43, 58, 0) 0 15px, var(--papel-claro) 15.5px 17px, rgba(29, 43, 58, 0) 17.5px),
+    repeating-linear-gradient(45deg, #25374D 0 4px, var(--tinta) 4px 8px);
+  border: 3px solid var(--papel-claro);
+}
+.pilha-face {
+  background: var(--papel-claro) linear-gradient(var(--vermelho), var(--vermelho)) center / 30px 44px no-repeat;
+  border: 1.5px solid var(--papel-borda);
+}
+.pilha-vazia { background: transparent; border: 2px dashed var(--tinta-3); box-shadow: none !important; }
+.pilha-rotulo { font-family: var(--fonte-titulo); font-size: .8rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--tinta-2); }
+.pilha-rotulo strong { font-family: var(--fonte-numeros); font-size: 1rem; }
+.pilha-calor .pilha-cartas {
+  display: grid;
+  place-items: center;
+  background: var(--tinta);
+  border: 3px solid var(--papel-claro);
+  color: var(--brasa);
+  box-shadow: var(--sombra-1);
+}
+.pilha-calor .icone { width: 24px; height: 24px; }
+
+/* ---------- Previsão: bloco de notas ---------- */
+.bloco-notas {
+  min-height: 104px;
+  padding: 8px 10px 10px 34px;
+  border-radius: 2px;
+  background-color: #FBF7EC;
+  background-image:
+    linear-gradient(90deg, transparent 24px, rgba(198, 58, 43, .45) 24px, rgba(198, 58, 43, .45) 25.5px, transparent 25.5px),
+    repeating-linear-gradient(180deg, transparent 0 23px, rgba(47, 127, 168, .22) 23px 24px);
+  box-shadow: 0 1px 0 #D9CDB2, var(--sombra-1);
+  transform: rotate(-.4deg);
+  display: grid;
+  gap: 6px;
+  align-content: start;
+  color: var(--tinta);
+}
+.previsao-vazia { font-family: var(--fonte-serifa); font-style: italic; color: var(--tinta-2); display: flex; align-items: center; gap: 8px; }
+
+.previsao-numeros { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+.previsao-numeros > div { display: flex; flex-direction: column; }
+.previsao-numeros .rotulo { font-family: var(--fonte-titulo); font-size: .68rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--tinta-3); }
+.previsao-numeros strong { font-family: var(--fonte-mao); font-size: 1.2rem; font-weight: 700; line-height: 1.2; color: var(--tinta); white-space: nowrap; }
+.previsao-numeros .numero-calor strong { color: var(--brasa-texto); }
+
+.lista-avisos { list-style: none; margin: 0; padding: 0; display: grid; gap: 3px; }
+.aviso { display: flex; align-items: flex-start; gap: 6px; font-size: .86rem; line-height: 1.3; color: var(--tinta); }
+.aviso .icone { margin-top: 2px; }
+.aviso-perigo { color: var(--vermelho-escuro); font-weight: 600; }
+.aviso-perigo .icone { color: var(--vermelho); }
+.aviso-calor .icone { color: var(--brasa); }
+.aviso-frio .icone { color: var(--gelo); }
+.aviso-ok .icone { color: var(--verde-texto); }
+.aviso-vacuo .icone { color: var(--azul); }
+
+/* =====================================================================
+   BOTÃO ACELERAR — o pedal vermelho, com espessura
+   ===================================================================== */
+.botao-acelerar {
+  position: relative;
+  min-height: 68px;
+  width: 100%;
+  max-width: 340px;
+  padding: 10px 24px;
+  border: 0;
+  border-radius: 12px;
+  background: var(--vermelho);
+  color: var(--papel-claro);
+  font-family: var(--fonte-titulo);
+  font-size: 1.7rem;
+  font-weight: 700;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  cursor: pointer;
+  box-shadow: inset 0 1px 0 rgba(255, 220, 200, .35), 0 6px 0 var(--vermelho-escuro), var(--sombra-3);
+  transition: transform .1s, box-shadow .1s;
+}
+.botao-acelerar::before {
+  content: "";
+  position: absolute;
+  inset: 6px;
+  border: 2px dashed rgba(247, 238, 219, .45);
+  border-radius: 8px;
+  pointer-events: none;
+}
+.botao-acelerar:hover:not(:disabled) { background-color: #D3463A; }
+.botao-acelerar:active:not(:disabled) { transform: translateY(5px); box-shadow: inset 0 1px 0 rgba(255, 220, 200, .35), 0 1px 0 var(--vermelho-escuro), var(--sombra-1); }
+.botao-acelerar .icone { width: 1em; height: 1em; }
+.botao-acelerar.perigo {
+  background: repeating-linear-gradient(-45deg, var(--vermelho) 0 14px, var(--vermelho-escuro) 14px 28px);
+  font-size: 1.25rem;
+}
+.botao-acelerar:disabled {
+  cursor: not-allowed;
+  background: var(--mesa-3);
+  color: var(--mesa-texto-suave);
+  box-shadow: inset 0 1px 0 rgba(255, 230, 200, .08), 0 6px 0 #17110C, var(--sombra-2);
+  font-size: 1.3rem;
+}
+.botao-acelerar:disabled::before { border-color: rgba(243, 233, 214, .14); }
+
+.dica-acao { font-size: .85rem; color: var(--mesa-texto-suave); text-align: center; }
+
+/* =====================================================================
+   MÃO DE CARTAS — cartas impressas em estilo cartaz de corrida
+   (papel creme com fio de tinta; fundo na cor do valor; ilustração do
+   carro 3D em duas tintas; número grande inclinado "fora de registro")
+   ===================================================================== */
+.mao-cabecalho { display: flex; align-items: baseline; justify-content: space-between; gap: var(--espaco-3); flex-wrap: wrap; padding: 0 4px; }
+.rotulo-mesa { font-size: .95rem; text-transform: uppercase; letter-spacing: .18em; color: var(--mesa-texto-suave); }
+.instrucao-mao { font-size: .95rem; color: var(--mesa-texto); }
+.instrucao-mao strong { color: var(--luz); }
+.contador-selecao { font-family: var(--fonte-numeros); color: var(--luz); }
+
+.mao {
+  display: flex;
+  gap: 10px;
+  padding: 34px 8px 16px;
+  overflow-x: auto;
+  scroll-snap-type: x proximity;
+  scrollbar-width: thin;
+  scrollbar-color: var(--mesa-3) transparent;
+}
+
+.carta {
+  --cor-carta: var(--azul);
+  --cor-numero: var(--papel-claro);
+  --cor-registro: var(--tinta);
+  position: relative;
+  flex: 0 0 auto;
+  width: 96px;
+  height: 134px;
+  padding: 5px;
+  border: 0;
+  border-radius: 7px;
+  background-color: var(--papel-claro);
+  background-image: var(--textura-papel);
+  color: var(--papel-claro);
+  text-align: left;
+  cursor: pointer;
+  scroll-snap-align: start;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .6), inset 0 0 0 1px rgba(29, 43, 58, .28), var(--sombra-2);
+  transform: translateY(var(--desce, 0)) rotate(var(--giro, 0deg));
+  transform-origin: 50% 120%;
+  transition: transform .2s cubic-bezier(.2, .9, .3, 1.2), box-shadow .2s, filter .2s;
+}
+.carta-valor-1 { --cor-carta: var(--azul); }
+.carta-valor-2 { --cor-carta: var(--verde-escuro); }
+.carta-valor-3 { --cor-carta: var(--ocre); --cor-numero: var(--tinta); --cor-registro: var(--papel-claro); }
+.carta-valor-4 { --cor-carta: var(--vermelho); }
+
+.carta-face {
+  position: relative;
+  height: 100%;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto auto;
+  border-radius: 3px;
+  overflow: hidden;
+  background-color: var(--cor-carta);
+  /* listras diagonais de retícula, como num cartaz serigrafado */
+  background-image:
+    var(--textura-papel),
+    repeating-linear-gradient(-62deg, rgba(29, 43, 58, 0) 0 11px, rgba(29, 43, 58, .11) 11px 14px);
+  box-shadow: inset 0 0 0 1px rgba(29, 43, 58, .55);
+}
+
+.carta-topo {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 2px;
+  padding: 1px 6px 0 7px;
+}
+.carta-numero {
+  font-family: var(--fonte-titulo);
+  font-size: 2.55rem;
+  font-weight: 700;
+  line-height: .92;
+  color: var(--cor-numero);
+  transform: skewX(var(--inclinacao));
+  /* a segunda tinta levemente deslocada (fora de registro) */
+  text-shadow: 2px 2px 0 var(--cor-registro);
+}
+.carta-chevrons { display: flex; gap: 1px; margin-top: 8px; color: var(--cor-numero); }
+.chevron { width: 6px; height: 9px; background: currentColor; clip-path: polygon(0 0, 45% 0, 100% 50%, 45% 100%, 0 100%, 55% 50%); }
+
+.carta-ilustracao {
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  object-fit: contain;
+  padding: 0 1px;
+  pointer-events: none;
+  user-select: none;
+}
+
+.carta-nome {
+  padding: 0 7px 3px;
+  text-align: right;
+  font-family: var(--fonte-titulo);
+  font-size: .8rem;
+  font-weight: 700;
+  letter-spacing: .07em;
+  line-height: 1.1;
+  text-transform: uppercase;
+  color: var(--cor-numero);
+  transform: skewX(var(--inclinacao));
+}
+.carta-tipo {
+  padding: 3px 0 4px;
+  background: var(--tinta);
+  color: var(--papel-claro);
+  text-align: center;
+  font-family: var(--fonte-titulo);
+  font-size: .62rem;
+  font-weight: 700;
+  letter-spacing: .24em;
+  text-transform: uppercase;
+}
+
+.carta-marca {
+  position: absolute;
+  top: -11px;
+  right: -11px;
+  z-index: 2;
+  width: 28px;
+  height: 28px;
+  display: none;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--luz);
+  color: var(--tinta);
+  box-shadow: 0 0 0 3px var(--papel-claro), var(--sombra-1);
+}
+.carta-marca .icone { width: 16px; height: 16px; }
+
+.carta:hover:not([aria-disabled="true"]),
+.carta:focus-visible {
+  transform: translateY(-14px) rotate(0deg) scale(1.04);
+  z-index: 3;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .6), inset 0 0 0 1px rgba(29, 43, 58, .28), var(--sombra-3);
+}
+.carta.selecionada {
+  transform: translateY(-28px) rotate(0deg);
+  z-index: 2;
+  box-shadow: inset 0 0 0 1px rgba(29, 43, 58, .28), 0 0 0 3px var(--luz), var(--sombra-3);
+}
+.carta.selecionada .carta-marca { display: grid; }
+
+/* Carta de Calor: azul-marinho, motor superaquecendo e carimbo "carta morta" */
+.carta-calor { cursor: not-allowed; }
+.carta-calor .carta-face {
+  background-color: var(--tinta);
+  background-image:
+    var(--textura-papel),
+    repeating-linear-gradient(135deg, rgba(224, 112, 47, .09) 0 6px, rgba(224, 112, 47, 0) 6px 12px);
+}
+.carta-icone { display: flex; margin: 5px 0 0 -1px; color: var(--brasa); }
+.carta-icone .icone { width: 22px; height: 22px; }
+.carta-calor .carta-nome { color: var(--brasa); font-size: .72rem; }
+.carta-calor .carta-tipo { background: var(--brasa); color: var(--tinta); }
+.carimbo {
+  position: absolute;
+  top: 42%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(-16deg);
+  padding: 2px 6px;
+  border: 2px solid var(--vermelho);
+  border-radius: 3px;
+  background: rgba(247, 238, 219, .93);
+  color: var(--vermelho);
+  font-family: var(--fonte-titulo);
+  font-size: .72rem;
+  font-weight: 700;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+/* Fora da sua vez a mão fica "na sombra" da luminária */
+.mao-bloqueada .carta { filter: brightness(.7) saturate(.6); cursor: default; }
+.mao-bloqueada .carta:hover { transform: translateY(var(--desce, 0)) rotate(var(--giro, 0deg)); }
+
+/* No celular as cartas ficam retas, lado a lado, com rolagem */
+@media (max-width: 767px) {
+  .carta { --giro: 0deg !important; --desce: 0px !important; }
+}
+/* Leque de cartas (a partir do tablet) */
+@media (min-width: 768px) {
+  .mao { justify-content: center; overflow: visible; gap: 0; padding-top: 40px; }
+  .carta + .carta { margin-left: -8px; }
+}
+@media (min-width: 1100px) {
+  .carta { width: 104px; height: 146px; }
+  .carta-numero { font-size: 2.8rem; }
+}
+
+/* =====================================================================
+   PAINÉIS: CLASSIFICAÇÃO E DIÁRIO — folhas de cronometragem impressas
+   ===================================================================== */
+.painel { padding: 12px 14px 14px; display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.painel-titulo {
+  font-size: 1rem;
+  text-transform: uppercase;
+  letter-spacing: .16em;
+  padding-bottom: 6px;
+  border-bottom: 3px double var(--tinta);
+}
+
+.classificacao { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
+.classif-item {
+  display: grid;
+  grid-template-columns: auto auto minmax(0, 1fr);
+  grid-template-areas: "pos selo nome" "pos selo barra" "pos selo dados";
+  align-items: center;
+  column-gap: 8px;
+  row-gap: 3px;
+  padding: 7px 8px;
+  border-radius: 3px;
+  border-left: 4px solid transparent;
+}
+.classif-item + .classif-item { border-top: 1px dotted var(--papel-borda); border-radius: 0 0 3px 3px; }
+.classif-pos { grid-area: pos; font-family: var(--fonte-numeros); font-size: 1.2rem; font-weight: 700; width: 2.1ch; }
+.classif-item .selo-carro { grid-area: selo; }
+.classif-nome { grid-area: nome; font-family: var(--fonte-titulo); font-size: 1.05rem; font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.classif-nome small { font-family: var(--fonte-serifa); font-style: italic; font-weight: 400; font-size: .8rem; color: var(--tinta-2); }
+/* Progresso: uma mini-faixa de pista com a bandeira quadriculada no fim */
+.classif-barra {
+  grid-area: barra;
+  position: relative;
+  height: 8px;
+  border-radius: 2px;
+  background: var(--asfalto);
+  overflow: hidden;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .25);
+}
+.classif-barra::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 8px;
+  background: conic-gradient(var(--papel-claro) 25%, var(--tinta) 0 50%, var(--papel-claro) 0 75%, var(--tinta) 0) 0 0 / 4px 4px;
+}
+.classif-barra span { display: block; height: 100%; transition: width .5s ease; box-shadow: inset 0 -2px 0 rgba(0, 0, 0, .2); }
+.classif-dados { grid-area: dados; display: flex; flex-wrap: wrap; gap: 2px 10px; font-size: .78rem; color: var(--tinta-2); }
+.classif-dados span { display: inline-flex; align-items: center; gap: 3px; }
+.classif-dados strong { font-family: var(--fonte-numeros); }
+.classif-dados .icone { width: 12px; height: 12px; }
+.dado-calor .icone { color: var(--brasa); }
+.dado-derrapagem .icone { color: var(--vermelho); }
+.classif-item.humano .classif-nome { color: #1A5E88; }
+.classif-item.na-vez { background: rgba(242, 179, 91, .3); border-left-color: var(--tinta); }
+
+.log-eventos {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  max-height: 280px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--papel-borda) transparent;
+}
+.log-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 6px 2px;
+  border-bottom: 1px dotted var(--papel-borda);
+  font-family: var(--fonte-serifa);
+  font-size: .86rem;
+  line-height: 1.35;
+  color: var(--tinta);
+}
+.log-item .selo-carro { flex: none; margin-top: 1px; }
+.log-calor span::before {
+  content: "";
+  display: inline-block;
+  width: .8em;
+  height: .8em;
+  margin-right: 5px;
+  background: url("../assets/pecas/cubo-calor.webp") center / contain no-repeat;
+  vertical-align: -.1em;
+}
+.log-frio { color: var(--gelo-texto); }
+.log-vacuo span::before { content: "» "; font-weight: 700; color: var(--azul); }
+.log-perigo { color: var(--vermelho-escuro); font-weight: 700; }
+.log-rodada {
+  justify-content: center;
+  border-bottom: 0;
+  font-family: var(--fonte-titulo);
+  font-size: .8rem;
+  font-weight: 700;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: var(--tinta-2);
+}
+.log-rodada span::before, .log-rodada span::after { content: " — "; }
+.log-fim { color: var(--verde-texto); font-weight: 700; }
+
+@media (min-width: 1360px) {
+  .log-eventos { max-height: calc(100vh - 470px); min-height: 200px; }
+}
+
+/* =====================================================================
+   TELA DE FIM — pódio de madeira sob a luminária, com as miniaturas
+   ===================================================================== */
+.fim-cabecalho .caixa-faixa { color: var(--luz); }
+.fim-titulo {
+  font-size: clamp(3rem, 12vw, 5.4rem);
+  line-height: .95;
+  text-transform: uppercase;
+  color: var(--papel-claro);
+  transform: skewX(var(--inclinacao));
+  text-shadow: 4px 3px 0 var(--vermelho);
+  outline: none;
+}
+.fim-vitoria .fim-titulo { color: var(--luz); text-shadow: 4px 3px 0 var(--vermelho-escuro); }
+.fim-subtitulo { font-family: var(--fonte-serifa); font-style: italic; font-size: 1.15rem; color: var(--mesa-texto-suave); }
+
+.podio { display: flex; justify-content: center; align-items: flex-end; gap: 6px; min-height: 300px; }
+.podio-lugar { flex: 0 1 190px; display: flex; flex-direction: column; align-items: center; gap: 8px; }
+.podio-piloto { display: flex; flex-direction: column; align-items: center; gap: 2px; text-align: center; }
+/* a miniatura fica por último: pousada em cima do degrau */
+.podio-carro {
+  order: 3;
+  display: block;
+  width: min(170px, 30vw);
+  height: auto;
+  margin: 2px 0 -22px;
+  filter: drop-shadow(4px 8px 6px rgba(10, 6, 2, .6));
+}
+.podio-piloto .selo-carro { filter: drop-shadow(1px 2px 2px rgba(0, 0, 0, .5)); }
+.podio-nome { font-family: var(--fonte-titulo); font-size: 1.15rem; font-weight: 700; color: var(--mesa-texto); word-break: break-word; }
+.podio-pontos { font-family: var(--fonte-serifa); font-style: italic; font-size: .9rem; color: var(--luz); }
+.podio-bloco {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding-top: 12px;
+  border-radius: 5px 5px 0 0;
+  background:
+    linear-gradient(160deg, rgba(255, 214, 160, .28), rgba(255, 214, 160, 0) 45%),
+    var(--textura-madeira),
+    linear-gradient(180deg, #6A4A2E, #4A3220);
+  box-shadow: inset 0 2px 0 rgba(255, 230, 190, .3), inset 0 -8px 0 rgba(0, 0, 0, .2), var(--sombra-3);
+}
+.podio-numero {
+  font-family: var(--fonte-titulo);
+  font-size: 2.4rem;
+  font-weight: 700;
+  color: var(--papel-claro);
+  transform: skewX(var(--inclinacao));
+  text-shadow: 2px 2px 0 var(--tinta);
+}
+.podio-1 .podio-bloco { height: 160px; }
+.podio-2 .podio-bloco { height: 115px; }
+.podio-3 .podio-bloco { height: 82px; }
+.podio-trofeu { color: var(--luz); font-size: 2rem; filter: drop-shadow(1px 2px 1px rgba(0, 0, 0, .5)); }
+.podio-humano .podio-nome { color: var(--luz); }
+
+/* Tabelas (sobre papel) */
+.tabela-rolagem { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: .92rem; }
+th, td { padding: 7px 8px; text-align: left; border-bottom: 1px solid var(--papel-3); white-space: nowrap; }
+thead th { font-family: var(--fonte-titulo); font-size: .78rem; letter-spacing: .14em; text-transform: uppercase; color: var(--tinta-2); border-bottom: 2px solid var(--tinta); }
+tbody th { font-family: var(--fonte-titulo); font-size: 1rem; font-weight: 700; }
+tbody th .selo-carro { vertical-align: middle; margin-right: 4px; }
+td { font-family: var(--fonte-numeros); }
+.folha-pontos td { font-family: var(--fonte-mao); font-size: 1rem; }
+.linha-humano { background: rgba(31, 111, 160, .12); }
+.linha-humano th { color: #1A5E88; }
+.medalha { color: var(--mostarda-escura); }
+.tag-perigo { color: var(--vermelho-escuro); display: inline-flex; align-items: center; gap: 4px; font-weight: 700; }
+
+/* =====================================================================
+   MODAIS — livro de regras e ranking (livreto impresso)
+   ===================================================================== */
+.modal {
+  width: min(920px, calc(100vw - 24px));
+  max-height: calc(100vh - 24px);
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--tinta);
+  overflow: visible;
+}
+.modal-estreito { width: min(600px, calc(100vw - 24px)); }
+.modal::backdrop { background: rgba(10, 7, 4, .74); backdrop-filter: blur(2px); }
+.modal-caixa { display: flex; flex-direction: column; max-height: calc(100vh - 26px); box-shadow: inset 0 1px 0 rgba(255, 250, 238, .8), var(--sombra-3); }
+.modal-cabecalho {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--espaco-3);
+  padding: var(--espaco-4) var(--espaco-5) var(--espaco-3);
+  border-bottom: 3px double var(--tinta);
+}
+.modal-cabecalho h2 { font-size: 2rem; text-transform: uppercase; letter-spacing: .03em; }
+.modal-corpo { padding: var(--espaco-4) var(--espaco-5) var(--espaco-5); overflow-y: auto; display: grid; gap: var(--espaco-4); }
+
+.regras-objetivo { font-family: var(--fonte-serifa); font-size: 1.1rem; }
+.regras-grade { display: grid; grid-template-columns: 1fr; gap: var(--espaco-3); }
+@media (min-width: 640px) { .regras-grade { grid-template-columns: 1fr 1fr; } }
+@media (min-width: 880px) { .regras-grade { grid-template-columns: 1fr 1fr 1fr; } }
+
+.regra {
+  padding: 12px 14px 14px;
+  border-radius: 3px;
+  box-shadow: inset 0 0 0 1.5px rgba(29, 43, 58, .7), inset 0 0 0 4px var(--papel), inset 0 0 0 5px rgba(29, 43, 58, .25);
+  display: grid;
+  gap: 6px;
+  align-content: start;
+}
+.regra h3 { display: flex; align-items: center; gap: 8px; font-size: 1.2rem; text-transform: uppercase; letter-spacing: .06em; }
+.regra-num {
+  width: 24px;
+  height: 24px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--tinta);
+  color: var(--papel-claro);
+  font-family: var(--fonte-numeros);
+  font-size: .85rem;
+}
+.regra p { font-family: var(--fonte-serifa); font-size: .94rem; line-height: 1.45; color: var(--tinta-2); }
+.regra-perigo h3 { color: var(--vermelho-escuro); }
+.regra-frio h3 { color: var(--gelo-texto); }
+.regra-vacuo { grid-column: 1 / -1; }   /* 7ª regra: ocupa a linha inteira */
+.regra-vacuo h3 { color: #1A5E88; }
+
+/* Ilustrações das regras: as mesmas peças do jogo */
+.regra-ilustra { display: flex; gap: 6px; align-items: center; min-height: 50px; }
+.regra-marchas span {
+  width: 30px; height: 30px; display: grid; place-items: center; border-radius: 50%;
+  background: var(--papel-2); box-shadow: inset 0 0 0 2px var(--tinta);
+  font-family: var(--fonte-numeros); font-weight: 700; color: var(--tinta);
+}
+.regra-marchas .ativa {
+  background: url("../assets/pecas/manopla.webp") center / 112% no-repeat;
+  box-shadow: none;
+  color: var(--papel-claro);
+  filter: drop-shadow(2px 3px 2px rgba(14, 8, 3, .5));
+}
+.mini-carta {
+  width: 32px; height: 44px; display: grid; place-items: start; padding: 2px 0 0 5px;
+  border: 3px solid var(--papel-claro); border-radius: 4px; color: var(--papel-claro);
+  font-family: var(--fonte-titulo); font-weight: 700; font-size: 1.3rem; line-height: 1;
+  box-shadow: inset 0 0 0 1px rgba(29, 43, 58, .4), var(--sombra-1);
+  background-image: repeating-linear-gradient(-62deg, rgba(29, 43, 58, 0) 0 6px, rgba(29, 43, 58, .14) 6px 8px);
+  text-shadow: 1.5px 1.5px 0 var(--tinta);
+}
+.mini-carta.v2 { background-color: var(--verde-escuro); }
+.mini-carta.v3 { background-color: var(--ocre); color: var(--tinta); text-shadow: 1.5px 1.5px 0 var(--papel-claro); }
+.mini-carta.v4 { background-color: var(--vermelho); }
+.mini-cubo {
+  width: 26px; height: 26px;
+  background: url("../assets/pecas/cubo-calor.webp") center / contain no-repeat;
+  filter: drop-shadow(1px 2px 1px rgba(0, 0, 0, .45));
+}
+.mini-cubo.vazio { background: none; filter: none; border-radius: 4px; box-shadow: inset 0 0 0 1.5px var(--tinta-3); }
+/* Placa de curva: disco creme, aro vermelho, número em tinta */
+.mini-escudo {
+  width: 46px; height: 46px; display: grid; place-items: center; align-content: center; line-height: 1;
+  border-radius: 50%; background: var(--papel-claro); color: var(--tinta);
+  box-shadow: inset 0 0 0 5px var(--vermelho), inset 0 0 0 6.5px var(--papel-claro), 0 0 0 1.5px var(--tinta), var(--sombra-1);
+  font-family: var(--fonte-numeros); font-weight: 700; font-size: 1.1rem;
+}
+.mini-escudo small { font-family: var(--fonte-titulo); font-size: .45rem; letter-spacing: .1em; color: var(--tinta-2); }
+.mini-alerta {
+  width: 42px; height: 38px; display: grid; place-items: center; padding-top: 10px;
+  background: var(--vermelho); color: #fff; clip-path: polygon(50% 0, 100% 100%, 0 100%);
+  font-weight: 900; font-size: 1.2rem;
+}
+.mini-floco { font-size: 2rem; color: var(--gelo); line-height: 1; }
+/* Rastro: o carro azul colado atrás do vermelho, puxado para a frente */
+.mini-carro { width: 40px; height: 23px; background: center / contain no-repeat; filter: drop-shadow(2px 3px 2px rgba(0, 0, 0, .4)); }
+.mini-carro.azul { background-image: url("../assets/carros/carro-azul-cima.webp"); }
+.mini-carro.vermelho { background-image: url("../assets/carros/carro-vermelho-cima.webp"); }
+.mini-rastro { font-family: var(--fonte-titulo); font-weight: 700; font-size: 1.1rem; letter-spacing: .06em; color: #1A5E88; }
+
+.regras-colunas { display: grid; gap: var(--espaco-4); }
+@media (min-width: 700px) { .regras-colunas { grid-template-columns: 1fr 1fr; } }
+.regras-subtitulo { font-size: 1.1rem; text-transform: uppercase; letter-spacing: .1em; color: var(--vermelho-escuro); margin-bottom: 6px; }
+.regras-lista { margin: 0; padding-left: 1.2em; display: grid; gap: 6px; font-family: var(--fonte-serifa); color: var(--tinta-2); }
+
+/* =====================================================================
+   SOBREPOSIÇÕES: cartaz da prova, semáforo (caixa metálica) e bandeirada
+   ===================================================================== */
+.sobreposicao {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--espaco-5);
+  background: rgba(10, 7, 4, .72);
+}
+
+/* Cartaz da prova: impresso como a tampa da caixa. A mesa escurece quase
+   por inteiro (numa camada própria, para o cartaz não esmaecer junto com
+   ela) e a troca de tela acontece por baixo, sem aparecer. */
+.cartaz-largada { background: none; }
+.cartaz-largada::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(12, 8, 5, .94);
+}
+.cartaz {
+  position: relative;
+  width: min(100% - 32px, 460px);
+  padding: 22px 26px 0;
+  overflow: hidden;
+  border-radius: 6px;
+  text-align: center;
+  background-color: var(--papel);
+  background-image:
+    radial-gradient(circle at 100% 0, rgba(226, 163, 59, .38) 0 22%, rgba(226, 163, 59, 0) 23%),
+    var(--meio-tom),
+    var(--textura-papel);
+  background-size: auto, 7px 7px, auto;
+  color: var(--tinta);
+  transform: rotate(-1.5deg);
+  box-shadow: inset 0 1px 0 rgba(255, 250, 238, .8), inset 0 0 0 1px rgba(29, 43, 58, .25), var(--sombra-3);
+}
+.cartaz .caixa-faixa { color: var(--tinta); letter-spacing: .32em; }
+.cartaz-circuito {
+  margin: 12px 0 10px;
+  font-family: var(--fonte-titulo);
+  font-size: clamp(2.2rem, 10vw, 3.6rem);
+  font-weight: 700;
+  line-height: .9;
+  text-transform: uppercase;
+  color: var(--vermelho);
+  transform: skewX(var(--inclinacao));
+  text-shadow: 3px 3px 0 var(--tinta);
+}
+.cartaz-detalhes {
+  font-family: var(--fonte-serifa);
+  font-style: italic;
+  font-size: 1.05rem;
+  color: var(--tinta-2);
+}
+/* Faixa quadriculada no pé do cartaz, de ponta a ponta */
+.cartaz-xadrez {
+  height: 24px;
+  margin: 20px -26px 0;
+  border-top: 3px solid var(--tinta);
+  background: repeating-conic-gradient(var(--tinta) 0 25%, var(--papel-claro) 0 50%) 0 0 / 24px 24px;
+}
+
+.semaforo-caixa {
+  display: flex;
+  gap: 16px;
+  padding: 16px 22px;
+  border-radius: 14px;
+  background:
+    radial-gradient(circle at 10px 10px, #6B635A 0 2px, rgba(0, 0, 0, 0) 2.5px),
+    radial-gradient(circle at calc(100% - 10px) 10px, #6B635A 0 2px, rgba(0, 0, 0, 0) 2.5px),
+    linear-gradient(180deg, #3A342E, #1B1714);
+  box-shadow: inset 0 1px 0 rgba(255, 240, 220, .18), inset 0 -2px 0 rgba(0, 0, 0, .5), 0 0 0 3px #0E0B08, var(--sombra-3);
+}
+.luz {
+  width: clamp(48px, 14vw, 70px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(circle at 38% 32%, #4A423A, #1A1612 70%);
+  box-shadow: inset 0 4px 8px rgba(0, 0, 0, .75), 0 0 0 3px #0E0B08, 0 1px 0 4px rgba(255, 240, 220, .08);
+  transition: background .12s, box-shadow .12s;
+}
+.luz.vermelha { background: radial-gradient(circle at 38% 32%, #FFB3A6, #E04A38 45%, #7E1F14); box-shadow: 0 0 0 3px #0E0B08, 0 0 30px rgba(240, 90, 70, .85); }
+.luz.verde { background: radial-gradient(circle at 38% 32%, #C2F2CC, #2A9D5C 48%, #14502C); box-shadow: 0 0 0 3px #0E0B08, 0 0 32px rgba(110, 210, 140, .85); }
+.semaforo-texto {
+  font-family: var(--fonte-titulo);
+  font-size: clamp(3rem, 16vw, 6rem);
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--papel-claro);
+  text-shadow: 5px 4px 0 var(--vermelho);
+}
+
+.bandeira-xadrez {
+  width: min(60vw, 280px);
+  aspect-ratio: 3 / 2;
+  background-color: var(--papel-claro);
+  background-image:
+    linear-gradient(45deg, var(--tinta) 25%, transparent 25%, transparent 75%, var(--tinta) 75%),
+    linear-gradient(45deg, var(--tinta) 25%, transparent 25%, transparent 75%, var(--tinta) 75%);
+  background-size: 40px 40px;
+  background-position: 0 0, 20px 20px;
+  border-radius: 3px;
+  box-shadow: var(--sombra-3);
+  transform-origin: left center;
+}
+.bandeirada-texto {
+  padding: 0 var(--espaco-4);
+  text-align: center;
+  font-family: var(--fonte-titulo);
+  font-size: clamp(2.2rem, 9vw, 4.4rem);
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--luz);
+  transform: skewX(var(--inclinacao));
+  text-shadow: 4px 3px 0 var(--vermelho-escuro);
+}
+
+/* =====================================================================
+   TOASTS — bilhetes de papel
+   ===================================================================== */
+.toasts {
+  position: fixed;
+  top: 70px;
+  left: 50%;
+  z-index: 80;
+  transform: translateX(-50%);
+  width: min(430px, calc(100vw - 32px));
+  display: grid;
+  gap: var(--espaco-2);
+  pointer-events: none;
+}
+.toast {
+  --cor-foco: var(--tinta);
+  pointer-events: auto;
+  display: flex;
+  align-items: center;
+  gap: var(--espaco-2);
+  padding: 10px 8px 10px 14px;
+  border-radius: 3px;
+  border-left: 6px solid var(--tinta-3);
+  background-color: var(--papel-claro);
+  background-image: var(--textura-papel);
+  color: var(--tinta);
+  box-shadow: 0 2px 0 #D9CDB2, var(--sombra-3);
+  font-size: .94rem;
+  line-height: 1.35;
+}
+.toast-icone { flex: none; font-size: 1.2rem; display: flex; }
+.toast-texto { flex: 1; }
+.toast-fechar {
+  flex: none;
+  width: 36px;
+  height: 36px;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--tinta-2);
+  font-size: 1.4rem;
+  cursor: pointer;
+}
+.toast-fechar:hover { background: rgba(29, 43, 58, .08); color: var(--tinta); }
+.toast-erro, .toast-perigo { border-left-color: var(--vermelho); }
+.toast-erro .toast-icone, .toast-perigo .toast-icone { color: var(--vermelho); }
+.toast-aviso { border-left-color: var(--luz); }
+.toast-aviso .toast-icone { color: var(--mostarda-escura); }
+.toast-sucesso { border-left-color: var(--verde); }
+.toast-sucesso .toast-icone { color: var(--verde-texto); }
+.toast-info { border-left-color: var(--azul); }
+.toast-info .toast-icone { color: var(--azul); }
+
+@media (min-width: 768px) {
+  .toasts { top: auto; bottom: var(--espaco-5); left: auto; right: var(--espaco-5); transform: none; }
+}
+
+/* =====================================================================
+   CONFETE (vitória) — papel picado nas cores da paleta
+   ===================================================================== */
+.confete { position: fixed; inset: 0; pointer-events: none; overflow: hidden; z-index: 50; }
+.confete-peca { position: absolute; top: -20px; width: 10px; height: 14px; border-radius: 1px; opacity: .95; }
